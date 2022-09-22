@@ -1,0 +1,20 @@
+databaseChangeLog:
+  - changeSet:
+      id: 8
+      author: Havarian
+      changes:
+        - createTable:
+            tableName: audios
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: file_name
+                  type: varchar(255)
+              - column:
+                  name: page_id
+                  type: bigint

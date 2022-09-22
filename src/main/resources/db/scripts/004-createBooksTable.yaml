@@ -1,0 +1,33 @@
+databaseChangeLog:
+  - changeSet:
+      id: 4
+      author: Havarian
+      changes:
+        - createTable:
+            tableName: books
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: title
+                  type: varchar(100)
+              - column:
+                  name: description
+                  type: varchar(1000)
+              - column:
+                  name: cover_image_name
+                  type: varchar(255)
+              - column:
+                  name: creator_id
+                  type: bigint
+              - column:
+                  name: is_in_creation
+                  type: boolean
+              - column:
+                  name: is_published
+                  type: boolean
+

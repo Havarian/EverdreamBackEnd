@@ -1,0 +1,23 @@
+databaseChangeLog:
+  - changeSet:
+      id: 12
+      author: Havarian
+      changes:
+        - createTable:
+            tableName: book_author_type
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: book_id
+                  type: bigint
+              - column:
+                  name: author_id
+                  type: bigint
+              - column:
+                  name: author_type_id
+                  type: bigint

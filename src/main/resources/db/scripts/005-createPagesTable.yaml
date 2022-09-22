@@ -1,0 +1,29 @@
+databaseChangeLog:
+  - changeSet:
+      id: 5
+      author: Havarian
+      changes:
+        - createTable:
+            tableName: pages
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: is_root_page
+                  type: boolean
+              - column:
+                  name: creator_id
+                  type: bigint
+              - column:
+                  name: text
+                  type: text
+              - column:
+                  name: video_id
+                  type: bigint
+              - column:
+                  name: book_id
+                  type: bigint

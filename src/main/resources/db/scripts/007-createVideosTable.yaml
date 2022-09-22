@@ -1,0 +1,23 @@
+databaseChangeLog:
+  - changeSet:
+      id: 7
+      author: Havarian
+      changes:
+        - createTable:
+            tableName: videos
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: file_name
+                  type: varchar(255)
+              - column:
+                  name: loop_start
+                  type: double precision
+              - column:
+                  name: loop_end
+                  type: double precision

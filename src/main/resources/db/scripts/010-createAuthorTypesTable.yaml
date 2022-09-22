@@ -1,0 +1,17 @@
+databaseChangeLog:
+  - changeSet:
+      id: 11
+      author: Havarian
+      changes:
+        - createTable:
+            tableName: author_types
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: type
+                  type: varchar(20)
