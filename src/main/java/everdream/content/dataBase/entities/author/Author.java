@@ -1,6 +1,5 @@
 package everdream.content.dataBase.entities.author;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -9,6 +8,7 @@ import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Getter
@@ -36,7 +36,6 @@ public class Author {
     private String homePageUrl;
     @Column (name = "created_by")
     private Long creatorId;
-    @JsonBackReference
     @OneToMany (mappedBy = "author", fetch = FetchType.EAGER)
     @Fetch(FetchMode.SUBSELECT)
     private Set<BookAuthorType> bookAuthorTypeSet = new HashSet<>();
@@ -48,15 +47,15 @@ public class Author {
 
         Author author = (Author) o;
 
-        if (id != null ? !id.equals(author.id) : author.id != null) return false;
-        if (name != null ? !name.equals(author.name) : author.name != null) return false;
-        if (surname != null ? !surname.equals(author.surname) : author.surname != null) return false;
-        if (email != null ? !email.equals(author.email) : author.email != null) return false;
-        if (description != null ? !description.equals(author.description) : author.description != null) return false;
-        if (profilePictureName != null ? !profilePictureName.equals(author.profilePictureName) : author.profilePictureName != null)
+        if (!Objects.equals(id, author.id)) return false;
+        if (!Objects.equals(name, author.name)) return false;
+        if (!Objects.equals(surname, author.surname)) return false;
+        if (!Objects.equals(email, author.email)) return false;
+        if (!Objects.equals(description, author.description)) return false;
+        if (!Objects.equals(profilePictureName, author.profilePictureName))
             return false;
-        if (homePageUrl != null ? !homePageUrl.equals(author.homePageUrl) : author.homePageUrl != null) return false;
-        return creatorId != null ? creatorId.equals(author.creatorId) : author.creatorId == null;
+        if (!Objects.equals(homePageUrl, author.homePageUrl)) return false;
+        return Objects.equals(creatorId, author.creatorId);
     }
 
     @Override

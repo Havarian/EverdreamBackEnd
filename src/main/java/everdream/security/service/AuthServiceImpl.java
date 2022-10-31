@@ -1,6 +1,5 @@
 package everdream.security.service;
 
-import everdream.security.controller.AuthController;
 import everdream.security.controller.payload.JwtResponse;
 import everdream.security.controller.payload.LoginRequest;
 import everdream.security.controller.payload.RegisterRequest;
@@ -8,8 +7,6 @@ import everdream.security.token.TokenHandler;
 import everdream.user.controllers.dto.UserDto;
 import everdream.user.exceptions.UserExistsException;
 import everdream.user.services.AppUserService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -25,7 +22,6 @@ import java.util.stream.Collectors;
 @Service
 public class AuthServiceImpl implements AuthService{
 
-    private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
     private final AppUserService appUserService;
     private final AuthenticationManager authenticationManager;
     private final TokenHandler tokenHandler;

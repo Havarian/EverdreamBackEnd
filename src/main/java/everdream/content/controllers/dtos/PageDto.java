@@ -13,9 +13,23 @@ import java.util.Set;
 public class PageDto {
 
     private Long id;
-    private Boolean isRootPage;
     private Long creatorId;
     private String text;
-    private VideoDto videoDto;
-    private Set<AudioDto> audioDtos;
+    private String description;
+    private VideoDto video;
+    private Set<AudioDto> audio;
+    private Long parentId;
+
+    @Override
+    public String toString() {
+        return "PageDto{" +
+                "id=" + id +
+                ", creatorId=" + creatorId +
+                ", text='" + text + '\'' +
+                ", description='" + description + '\'' +
+                ", videoDto=" + video +
+                ", audioDtos=" + audio +
+                ", nextPages=" + parentId +
+                '}';
+    }
 }

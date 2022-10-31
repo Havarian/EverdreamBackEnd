@@ -5,8 +5,8 @@ import everdream.content.dataBase.repositories.AuthorRepository;
 import everdream.content.exceptions.UnableToDeleteException;
 import everdream.content.services.AuthorService;
 import everdream.fileManagement.service.TempFileService;
-import org.apache.catalina.connector.Response;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -25,8 +25,8 @@ public class AuthorController {
     private final AuthorService authorService;
     private final TempFileService tempFileService;
 
-    public AuthorController(AuthorRepository authorRepository, AuthorService authorService, TempFileService tempFileService) {
-        this.authorRepository = authorRepository;
+    public AuthorController(AuthorRepository authorRepositor, AuthorService authorService, TempFileService tempFileService) {
+        this.authorRepository = authorRepositor;
         this.authorService = authorService;
         this.tempFileService = tempFileService;
     }
