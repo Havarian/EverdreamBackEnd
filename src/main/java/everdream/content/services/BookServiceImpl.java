@@ -20,16 +20,26 @@ import java.util.Set;
 public class BookServiceImpl implements BookService{
 
     private final BookRepository bookRepository;
+    private final PageService pageService;
     private final AuthorService authorService;
     private final AWSService awsService;
 
-    public BookServiceImpl(BookRepository bookRepository, AuthorService authorService, AWSService awsService) {
+    public BookServiceImpl(BookRepository bookRepository, PageService pageService, AuthorService authorService, AWSService awsService) {
         this.bookRepository = bookRepository;
+        this.pageService = pageService;
         this.authorService = authorService;
         this.awsService = awsService;
     }
+
     @Override
-    public BookDto saveBookAndRefresh (BookDto bookDto) {
+    public BookDto getBookDtoById(Long bookId) {
+        Book book = bookRepository.findById(bookId)
+                .orElseThrow(() -> new IllegalArgumentException("Book with id: " + bookId + " not found"));
+        return ContentMapper.toBookDto(book);
+    }
+
+    @Override
+    public BookDto saveBookAndRefresh (BookDto bookDto) throws IOException, InterruptedException {
         Book savedBook = saveBook(bookDto);
         bookRepository.refresh(savedBook);
         return ContentMapper.toBookDto(savedBook);
@@ -37,38 +47,50 @@ public class BookServiceImpl implements BookService{
 
     @Override
     @Transactional
-    public Book saveBook(BookDto bookDto) throws IllegalArgumentException{
+    public Book saveBook(BookDto bookDto) throws IllegalArgumentException, IOException, InterruptedException {
+
         if (bookDto.getCreatorId() == null) {
             bookDto.setCreatorId(AppUserService.getCurrentUserId());
         }
         Book savedBook = bookRepository.save(ContentMapper.fromBookDto(bookDto));
-        bookDto.getAuthors().forEach(authorDto -> {
-            try {
-                authorService.addAuthorToBook(savedBook, authorDto);
-            } catch (IOException | InterruptedException e) {
-                e.printStackTrace();
-            }
-        });
+        // Pages
+        if (bookDto.getPages() != null) {
+            bookDto.getPages().forEach(pageDto -> {
+                try {
+                    pageService.savePage(savedBook, pageDto);
+                } catch (IOException | InterruptedException e) {
+                    e.printStackTrace();
+                }
+            });
+        }
+        // Authors
+        if (bookDto.getAuthors() != null) {
+            bookDto.getAuthors().forEach(authorDto -> {
+                try {
+                    authorService.addAuthorToBook(savedBook, authorDto);
+                } catch (IOException | InterruptedException e) {
+                    e.printStackTrace();
+                }
+            });
+        }
+        // Files
+        if (bookDto.getCoverImageName() != null) {
+            awsService.saveFileToS3(bookDto.getCoverImageName());
+        }
+
         return savedBook;
     }
 
-//    @Override
-//    @Transactional
-//    public BookDto addBookCover(MultipartFile file, Long bookId) throws IOException, InterruptedException {
-//        Book savedBook = bookRepository.findById(bookId)
-//                .orElseThrow(() -> new IllegalArgumentException("Book not Found!"));
-//        savedBook.setCoverImageName(awsService.saveFileToS3(file, bookId, null, FileTypes.coverImage.name()));
-//        return ContentMapper.toBookDto(savedBook);
-//    }
-
 
     @Override
+    @Transactional
     public void deleteBook(Long bookId) throws UnableToDeleteException, NoSuchElementException{
         Book book = bookRepository.findById(bookId)
                 .orElseThrow(() -> new NoSuchElementException("Book with id: " + bookId + "does not exist!"));
         if (AppUserService.getCurrentUserId().equals(book.getCreatorId()) || AppUserService.getCurrentUserRoles()
                 .stream().anyMatch(e -> e.equals("ROLE_ADMIN"))){
             bookRepository.deleteById(bookId);
+            pageService.deletePagesByBookId(bookId);
         } else {
             throw new UnableToDeleteException("Unable to delete book with id: " + bookId);
         }

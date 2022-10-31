@@ -10,7 +10,8 @@ import java.util.List;
 public interface AWSService {
 
     List<Bucket> getBucketList ();
-    void saveFileToS3 (File file, String path) throws IOException, InterruptedException;
+    void saveFileToS3 (String fileName) throws IOException, InterruptedException;
     ByteArrayResource getFileFromS3 (String fileName) throws IOException;
     void deleteFileFromS3 (String fileName);
+    boolean isFileExists (String fileName);
 }

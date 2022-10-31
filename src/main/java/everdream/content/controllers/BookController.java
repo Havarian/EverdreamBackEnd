@@ -3,12 +3,14 @@ package everdream.content.controllers;
 import everdream.content.controllers.dtos.BookDto;
 import everdream.content.exceptions.UnableToDeleteException;
 import everdream.content.services.BookService;
+import everdream.content.services.contentMapper.ContentMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.NoResultException;
+import java.io.IOException;
 import java.util.NoSuchElementException;
 
 @RestController
@@ -26,7 +28,7 @@ public class BookController {
     public ResponseEntity<?> saveBook (@RequestBody BookDto bookDto) {
         try {
             return ResponseEntity.ok(bookService.saveBookAndRefresh(bookDto));
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException | IOException | InterruptedException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
@@ -83,6 +85,13 @@ public class BookController {
         } catch (NoResultException e) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(e.getMessage());
         }
+    }
+
+    @PostMapping ("/testSave")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<?> saveComplex (@RequestBody BookDto bookComplexDto) {
+        return ResponseEntity.ok().body(ContentMapper.fromBookDto(bookComplexDto));
+//        System.out.println(ComplexBookMapper.fromComplexBookDto(bookComplexDto));
     }
 
 }
